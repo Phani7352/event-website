@@ -1,75 +1,53 @@
-// URLs for event APIs - fill as per your assignment/API docs
-const RECOMMENDED_API = 'https://gg-backend-assignment.azurewebsites.net/api/events?code=FOX6...typereco';
-const UPCOMING_API = 'https://gg-backend-assignment.azurewebsites.net/api/events?code=FOX6...page=1&type=upcoming';
-
-// DOM elements
-const recommendedContainer = document.getElementById('recommended-events');
-const upcomingContainer = document.getElementById('upcoming-events');
-const loadingSpinner = document.getElementById('loading-spinner');
-
-// --- Fetch Recommended Events ---
-fetch(RECOMMENDED_API)
-  .then(res => res.json())
-  .then(data => {
-    recommendedContainer.innerHTML = '';
-    data.events.forEach(ev => {
-      const card = document.createElement('div');
-      card.className = 'event-card';
-      card.innerHTML = `
-        <img src="${ev.imgUrl}" alt="${ev.eventName}" />
-        <div class="event-info">
-          <div class="event-name">${ev.eventName}</div>
-          <div class="event-meta">${ev.cityName}, ${new Date(ev.date).toLocaleDateString()} | ${ev.weather}</div>
-          <div>${ev.distanceKm.toFixed(1)} km away</div>
-        </div>
-      `;
-      recommendedContainer.appendChild(card);
-    });
-  });
-
-// --- Upcoming Events with Lazy Loading ---
-let currentPage = 1, loading = false;
-function loadUpcomingEvents() {
-  loading = true;
-  loadingSpinner.style.display = 'block';
-  fetch(UPCOMING_API.replace('page=1', `page=${currentPage}`))
-    .then(res => res.json())
-    .then(data => {
-      data.events.forEach(ev => {
-        const card = document.createElement('div');
-        card.className = 'event-card';
-        card.innerHTML = `
-          <img src="${ev.imgUrl}" alt="${ev.eventName}" />
-          <div class="event-info">
-            <div class="event-name">${ev.eventName}</div>
-            <div class="event-meta">${ev.cityName}, ${new Date(ev.date).toLocaleDateString()} | ${ev.weather}</div>
-            <div>${ev.distanceKm.toFixed(1)} km away</div>
-          </div>
-        `;
-        upcomingContainer.appendChild(card);
-      });
-      loading = false;
-      loadingSpinner.style.display = 'none';
-      if (data.hasMore) currentPage++;
-    });
-}
-
-// Lazy loading on scroll
-window.addEventListener('scroll', () => {
-  if (!loading && window.innerHeight + window.scrollY >= document.body.offsetHeight - 2) {
-    loadUpcomingEvents();
+// Dummy data for demo
+const recommendedEvents = [
+  {
+    img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+    name: "Friday Night Live",
+    info: "Mumbai • 23 Mar 2024"
+  },
+  {
+    img: "https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=400&q=80",
+    name: "Shakespeare Drama",
+    info: "Bengaluru • 25 Mar 2024"
+  },
+  {
+    img: "https://images.unsplash.com/photo-1515169273894-482ff870cc4e?auto=format&fit=crop&w=400&q=80",
+    name: "Laugh Riot Standup",
+    info: "Delhi • 27 Mar 2024"
   }
-});
-// Initial load
-loadUpcomingEvents();
+];
 
-// --- Authentication Modal Example ---
-function showLoginForm() {
-  document.getElementById('auth-modal').style.display = 'flex';
-  document.getElementById('login-form').style.display = 'block';
-  document.getElementById('signup-form').style.display = 'none';
-}
-function closeAuthModal() {
-  document.getElementById('auth-modal').style.display = 'none';
+const upcomingEvents = [
+  {
+    img: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80",
+    name: "Photography Workshop",
+    info: "Hyderabad • 30 Mar 2024"
+  },
+  {
+    img: "https://images.unsplash.com/photo-1531058020387-3be344556be6?auto=format&fit=crop&w=400&q=80",
+    name: "Spring City Marathon",
+    info: "Chennai • 2 Apr 2024"
+  }
+];
+
+// Render cards
+function renderEvents(events, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+  events.forEach(ev => {
+    const card = document.createElement("div");
+    card.className = "event-card";
+    card.innerHTML = `
+      <img src="${ev.img}" alt="${ev.name}">
+      <div class="event-details">
+        <div class="event-title">${ev.name}</div>
+        <div class="event-info">${ev.info}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
 }
 
+// Init
+renderEvents(recommendedEvents, "rec-list");
+renderEvents(upcomingEvents, "up-list");
