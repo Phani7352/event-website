@@ -2,68 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Task Tracker</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>BookUsNow - Events Near You</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="tracker">
-    <h1>My Task Tracker</h1>
-    <form id="task-form">
-      <input type="text" id="task-input" placeholder="Enter your task..." autocomplete="off">
-      <button>Add Task</button>
-    </form>
-    <ul id="task-list"></ul>
+  <!-- Nav -->
+  <header class="navbar">
+    <span class="logo">BookUsNow</span>
+    <nav>
+      <button onclick="showLoginForm()">Sign In</button>
+      <span class="location">Mumbai, India</span>
+    </nav>
+  </header>
+  
+  <!-- Banner -->
+  <section class="banner">
+    <img src="banner.jpg" alt="Banner: Discover Exciting Events" />
+    <h1>Discover Exciting Events Happening Near You</h1>
+    <p>Stay tuned for updates!</p>
+  </section>
+  
+  <!-- Recommended Shows (Horizontal Scroll) -->
+  <section class="recommended">
+    <h2>Recommended Shows</h2>
+    <div class="recommended-scroller" id="recommended-events"></div>
+  </section>
+  
+  <!-- Upcoming Events (Vertical Scroll/Lazy Loading) -->
+  <section class="upcoming">
+    <h2>Upcoming Events</h2>
+    <div id="upcoming-events"></div>
+    <div id="loading-spinner" style="display:none;">Loading...</div>
+  </section>
+  
+  <!-- Auth Forms Modal -->
+  <div id="auth-modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeAuthModal()">&times;</span>
+      <form id="signup-form" style="display:none;">
+        <h3>Sign Up</h3>
+        <input type="text" placeholder="Username" required />
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Password" required />
+        <button type="submit">Sign Up</button>
+      </form>
+      <form id="login-form">
+        <h3>Login</h3>
+        <input type="text" placeholder="Username/Email" required />
+        <input type="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+      </form>
+    </div>
   </div>
-  <script>
-    // Task Tracker JS (fully hand-written)
-    let tasks = JSON.parse(localStorage.getItem('tasks') || "[]");
-    const list = document.getElementById('task-list');
-    const form = document.getElementById('task-form');
-    const input = document.getElementById('task-input');
-
-    function renderTasks() {
-      list.innerHTML = '';
-      tasks.forEach((task, idx) => {
-        const li = document.createElement('li');
-        li.textContent = task.text;
-        li.className = task.done ? 'done' : '';
-        // Complete button
-        const completeBtn = document.createElement('button');
-        completeBtn.textContent = task.done ? 'Undo' : 'Done';
-        completeBtn.onclick = () => {
-          tasks[idx].done = !tasks[idx].done;
-          saveTasks();
-          renderTasks();
-        };
-        // Delete button
-        const delBtn = document.createElement('button');
-        delBtn.textContent = 'Delete';
-        delBtn.onclick = () => {
-          tasks.splice(idx, 1);
-          saveTasks();
-          renderTasks();
-        };
-        li.appendChild(completeBtn);
-        li.appendChild(delBtn);
-        list.appendChild(li);
-      });
-    }
-
-    form.onsubmit = function(e) {
-      e.preventDefault();
-      if (input.value.trim()) {
-        tasks.push({ text: input.value.trim(), done: false });
-        input.value = '';
-        saveTasks();
-        renderTasks();
-      }
-    };
-
-    function saveTasks() {
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
-
-    renderTasks();
-  </script>
+  
+  <script src="script.js"></script>
 </body>
 </html>
